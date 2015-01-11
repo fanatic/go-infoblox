@@ -10,6 +10,17 @@ import (
   "strings"
 )
 
+const (
+  STATUS_OK           = 200
+  STATUS_CREATED      = 201
+  STATUS_INVALID      = 400
+  STATUS_UNAUTHORIZED = 401
+  STATUS_FORBIDDEN    = 403
+  STATUS_NOTFOUND     = 404
+  STATUS_LIMIT        = 429
+  STATUS_GATEWAY      = 502
+)
+
 // APIResponse is used to parse the response from Infoblox.
 // GET requests tend to respond with Objects or lists of Objects
 // while POST,PUT,DELETE returns the Object References as a string
@@ -75,6 +86,8 @@ func (r APIResponse) Parse(out interface{}) (err error) {
   //    Reset:     r.RateLimitReset(),
   //  }
   //  return
+  case STATUS_CREATED:
+    fallthrough
   case STATUS_OK:
     if b, err = r.readBody(); err != nil {
       return

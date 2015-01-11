@@ -9,17 +9,10 @@ import (
   "strings"
 )
 
+//Resource represents a WAPI object type
 type Resource struct {
-  conn  *Client
-  child ResourceImpl
-  _ref  string
-}
-
-type ResourceImpl interface {
-  WAPIObject() string
-  RemoteAttributeAccessors() []string
-  RemotePostAccessors() []string
-  RemoteAttributeWriters() []string
+  conn       *Client
+  wapiObject string
 }
 
 type Options struct {
@@ -42,18 +35,18 @@ type Condition struct {
 }
 
 // All returns an array of all records for this resource
-func (r Resource) All(opts *Options) ([]interface{}, error) {
+func (r Resource) All(opts *Options) ([]map[string]interface{}, error) {
   return r.Find([]Condition{}, opts)
 }
 
 // Find resources with query parameters. Conditions are combined with AND
 // logic.  When a field is a list of extensible attribute that can have multiple
 // values, the condition is true if any value in the list matches.
-func (r Resource) Find(query []Condition, opts *Options) ([]interface{}, error) {
-  q := r.getQuery(opts, query)
+func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface{}, error) {
+  q := r.getQuery(opts, query, url.Values{})
 
-  log.Printf("GET %s\n", r.resourceURI("")+"?"+q.Encode())
-  req, err := http.NewRequest("GET", r.resourceURI("")+"?"+q.Encode(), nil)
+  log.Printf("GET %s\n", r.resourceURI()+"?"+q.Encode())
+  req, err := http.NewRequest("GET", r.resourceURI()+"?"+q.Encode(), nil)
   if err != nil {
     return nil, fmt.Errorf("Error creating request: %v\n", err)
   }
@@ -65,7 +58,7 @@ func (r Resource) Find(query []Condition, opts *Options) ([]interface{}, error) 
 
   //fmt.Printf("%v", resp.ReadBody())
 
-  var out []interface{}
+  var out []map[string]interface{}
   err = resp.Parse(&out)
   if err != nil {
     return nil, fmt.Errorf("%+v\n", err)
@@ -73,33 +66,34 @@ func (r Resource) Find(query []Condition, opts *Options) ([]interface{}, error) 
   return out, nil
 }
 
-// Get referenced object
-func (r Resource) Get(objectRef string, opts *Options) (interface{}, error) {
-  q := r.getQuery(opts, []Condition{})
+func (r Resource) Create(data url.Values, opts *Options) (string, error) {
+  q := r.getQuery(opts, []Condition{}, data)
+  q.Set("_return_fields", "") //Force object response
 
-  log.Printf("GET %s\n", r.resourceURI(objectRef)+"?"+q.Encode())
-  req, err := http.NewRequest("GET", r.resourceURI(objectRef)+"?"+q.Encode(), nil)
+  log.Printf("POST %s\n", r.resourceURI()+"?"+q.Encode())
+  req, err := http.NewRequest("POST", r.resourceURI(), strings.NewReader(q.Encode()))
   if err != nil {
-    return nil, fmt.Errorf("Error creating request: %v\n", err)
+    return "", fmt.Errorf("Error creating request: %v\n", err)
   }
+  req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
   resp, err := r.conn.SendRequest(req)
   if err != nil {
-    return nil, fmt.Errorf("Error sending request: %v\n", err)
+    return "", fmt.Errorf("Error sending request: %v\n", err)
   }
 
   //fmt.Printf("%v", resp.ReadBody())
 
-  var out interface{}
+  var out map[string]string
   err = resp.Parse(&out)
   if err != nil {
-    return nil, fmt.Errorf("%+v\n", err)
+    return "", fmt.Errorf("%+v\n", err)
   }
-  return out, nil
+  return out["_ref"], nil
 }
 
-func (r Resource) getQuery(opts *Options, query []Condition) url.Values {
-  v := url.Values{}
+func (r Resource) getQuery(opts *Options, query []Condition, extra url.Values) url.Values {
+  v := extra
 
   returnFieldOption := "_return_fields"
   if opts != nil && opts.ReturnBasicFields {
@@ -128,15 +122,6 @@ func (r Resource) getQuery(opts *Options, query []Condition) url.Values {
   return v
 }
 
-//@NotImplemented
-func Create() {}
-func Delete() {}
-func Update() {}
-
-func (r Resource) resourceURI(ref string) string {
-  if ref == "" {
-    return BASE_PATH + r.child.WAPIObject()
-  } else {
-    return BASE_PATH + ref
-  }
+func (r Resource) resourceURI() string {
+  return BASE_PATH + r.wapiObject
 }

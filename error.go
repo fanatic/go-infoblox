@@ -4,16 +4,6 @@ import (
   "fmt"
 )
 
-const (
-  STATUS_OK           = 200
-  STATUS_INVALID      = 400
-  STATUS_UNAUTHORIZED = 401
-  STATUS_FORBIDDEN    = 403
-  STATUS_NOTFOUND     = 404
-  STATUS_LIMIT        = 429
-  STATUS_GATEWAY      = 502
-)
-
 type Error map[string]interface{}
 
 func (e Error) Message() string {

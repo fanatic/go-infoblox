@@ -3,55 +3,86 @@ package main
 import (
   "fmt"
   "github.com/fanatic/go-infoblox"
-  "net/http"
+  "net/url"
 )
 
 func main() {
   ib := infoblox.NewClient("https://192.168.2.200/", "admin", "infoblox")
-  out, err := ib.Network().All(nil)
-  if err != nil {
-    fmt.Printf("%v\n", err)
-    return
-  }
-  fmt.Printf("%v\n\n", out)
 
+  // All networks
+  printList(ib.Network().All(nil))
+
+  // All network with options
   maxResults := 1000
   opts := &infoblox.Options{
     MaxResults:   &maxResults,
     ReturnFields: []string{"network"},
   }
+  printList(ib.Network().All(opts))
 
-  out, err = ib.Network().All(opts)
-  if err != nil {
-    fmt.Printf("%v\n", err)
-    return
+  // Find specific network
+  s := "network"
+  q := []infoblox.Condition{
+    infoblox.Condition{
+      Field: &s,
+      Value: "164.55.90.0/24",
+    },
   }
-  fmt.Printf("%v\n\n", out)
+  out, err := ib.Network().Find(q, nil)
+  printList(out, err)
+
+  // Example function call
+  printObject(ib.NetworkObject(out[0]["_ref"].(string)).NextAvailableIP(5, nil))
+
+  // Create a network
+  d := url.Values{}
+  d.Set("network", "192.168.11.0/24")
+  d.Set("comment", "created example")
+  ref, err := ib.Network().Create(d, nil)
+  printString(ref, err)
+
+  if ref != "" {
+    // Update it
+    d = url.Values{}
+    d.Set("comment", "updated example")
+    printString(ib.NetworkObject(ref).Update(d, nil))
+
+    // Get it
+    printObject(ib.NetworkObject(ref).Get(nil))
+
+    // Delete it
+    printError(ib.NetworkObject(ref).Delete(nil))
+  }
 }
 
-func save() {
-  ib := infoblox.NewClient("https://192.168.2.200/", "admin", "infoblox")
-
-  req, err := http.NewRequest("GET", infoblox.BASE_PATH+"network?_return_fields=authority,bootfile,bootserver,comment,ddns_domainname,ddns_generate_hostname,ddns_server_always_updates,ddns_ttl,ddns_update_fixed_addresses,ddns_use_option81,deny_bootp,disable,email_list,enable_ddns,enable_dhcp_thresholds,enable_email_warnings,enable_ifmap_publishing,enable_snmp_warnings,extensible_attributes,high_water_mark,high_water_mark_reset,ignore_dhcp_option_list_request,ipv4addr,lease_scavenge_time,low_water_mark,low_water_mark_reset,members,netmask,network,network_container,network_view,nextserver,options,pxe_lease_time,recycle_leases,update_dns_on_lease_renewal,use_authority,use_bootfile,use_bootserver,use_ddns_domainname,use_ddns_generate_hostname,use_ddns_ttl,use_ddns_update_fixed_addresses,use_ddns_use_option81,use_deny_bootp,use_email_list,use_enable_ddns,use_enable_dhcp_thresholds,use_enable_ifmap_publishing,use_ignore_dhcp_option_list_request,use_lease_scavenge_time,use_nextserver,use_options,use_recycle_leases,use_update_dns_on_lease_renewal,use_zone_associations,zone_associations", nil)
-  if err != nil {
-    fmt.Printf("Error creating request: %v\n", err)
-    return
+func printList(out []map[string]interface{}, err error) {
+  e(err)
+  for i, v := range out {
+    fmt.Printf("[%d]\n", i)
+    printObject(v, nil)
   }
+}
 
-  resp, err := ib.SendRequest(req)
-  if err != nil {
-    fmt.Printf("Error sending request: %v\n", err)
-    return
+func printObject(out map[string]interface{}, err error) {
+  e(err)
+  for k, v := range out {
+    fmt.Printf("  %s: %q\n", k, v)
   }
+  fmt.Printf("\n")
+}
 
-  //fmt.Printf("%v", resp.ReadBody())
+func printString(out string, err error) {
+  e(err)
+  fmt.Printf("  %q\n\n", out)
+}
 
-  var out []map[string]interface{}
-  err = resp.Parse(&out)
+func printError(err error) {
+  e(err)
+  fmt.Printf("SUCCESS\n")
+}
+
+func e(err error) {
   if err != nil {
-    fmt.Printf("%+v\n", err)
-    return
+    fmt.Printf("Error: %v\n", err)
   }
-
-  fmt.Printf("%v", out)
 }
