@@ -32,3 +32,9 @@ To see what requests are being issued by the library, set up an HTTP proxy
 such as Charles Proxy and then set the following environment variable:
 
     export HTTP_PROXY=http://localhost:8888
+
+To Do 
+-----
+- Only supports Network and Record:Host - need to add other WAPI objects, but they should be trivial to add.
+- Unit tests
+- Responses as objects rather than interfaces
