@@ -1,12 +1,5 @@
 package infoblox
 
-import (
-  "fmt"
-  "net/url"
-  "strconv"
-  "strings"
-)
-
 // https://192.168.2.200/wapidoc/objects/record.host.html
 func (c *Client) RecordHost() *Resource {
   return &Resource{
