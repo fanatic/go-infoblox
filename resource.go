@@ -7,6 +7,8 @@ import (
   "net/url"
   "strconv"
   "strings"
+  "encoding/json"
+  "bytes"
 )
 
 //Resource represents a WAPI object type
@@ -66,16 +68,33 @@ func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface
   return out, nil
 }
 
-func (r Resource) Create(data url.Values, opts *Options) (string, error) {
+func (r Resource) Create(data url.Values, opts *Options, body interface{}) (string, error) {
   q := r.getQuery(opts, []Condition{}, data)
   q.Set("_return_fields", "") //Force object response
-
   log.Printf("POST %s\n", r.resourceURI()+"?"+q.Encode())
-  req, err := http.NewRequest("POST", r.resourceURI(), strings.NewReader(q.Encode()))
-  if err != nil {
-    return "", fmt.Errorf("Error creating request: %v\n", err)
+
+  var req *http.Request
+  var err error
+  if body == nil {
+    // Send URL-encoded data in the request body
+    req, err = http.NewRequest("POST", r.resourceURI(), strings.NewReader(q.Encode()))
+    if err != nil {
+      return "", fmt.Errorf("Error creating request: %v\n", err)
+    }
+    req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+  } else {
+    // Put url-encoded data in the URL and send the body parameter as a JSON body.
+    bodyJSON, err := json.Marshal(body)
+    if err != nil {
+      return "", fmt.Errorf("Error creating request: %v\n", err)
+    }
+    log.Printf("POST body: %s\n", bodyJSON)
+    req, err = http.NewRequest("POST", r.resourceURI()+"?"+q.Encode(), bytes.NewReader(bodyJSON))
+    if err != nil {
+      return "", fmt.Errorf("Error creating request: %v\n", err)
+    }
+    req.Header.Set("Content-Type", "application/json")
   }
-  req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
   resp, err := r.conn.SendRequest(req)
   if err != nil {
