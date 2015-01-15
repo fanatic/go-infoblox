@@ -38,7 +38,7 @@ func main() {
   d := url.Values{}
   d.Set("network", "192.168.11.0/24")
   d.Set("comment", "created example")
-  ref, err := ib.Network().Create(d, nil)
+  ref, err := ib.Network().Create(d, nil, nil)
   printString(ref, err)
 
   if ref != "" {
