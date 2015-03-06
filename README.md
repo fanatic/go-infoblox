@@ -23,7 +23,6 @@ See http://godoc.org/github.com/fanatic/go-infoblox
 Using
 -----
 
-    export TLS_INSECURE=true
     go run ./example/example.go
 
 Debugging 
