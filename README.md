@@ -35,6 +35,6 @@ such as Charles Proxy and then set the following environment variable:
 
 To Do 
 -----
-- Only supports Network and Record:Host - need to add other WAPI objects, but they should be trivial to add.
+- Only supports Network, Record:Host, Record:Cname, and Record:Ptr - need to add other WAPI objects, but they should be trivial to add.
 - Unit tests
 - Responses as objects rather than interfaces
