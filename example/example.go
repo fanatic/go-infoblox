@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/fanatic/go-infoblox"
 	"net/url"
+
+	infoblox "github.com/fanatic/go-infoblox"
 )
 
 func main() {
@@ -30,6 +31,17 @@ func main() {
 		},
 	}
 	out, err := ib.Network().Find(q, nil)
+	printList(out, err)
+
+	// Find info about an IP address
+	s = "ip_address"
+	q = []infoblox.Condition{
+		infoblox.Condition{
+			Field: &s,
+			Value: "192.168.11.10",
+		},
+	}
+	out, err = ib.Ipv4address().Find(q, nil)
 	printList(out, err)
 
 	// Example function call
