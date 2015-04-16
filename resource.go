@@ -1,14 +1,14 @@
 package infoblox
 
 import (
+  "bytes"
+  "encoding/json"
   "fmt"
   "log"
   "net/http"
   "net/url"
   "strconv"
   "strings"
-  "encoding/json"
-  "bytes"
 )
 
 //Resource represents a WAPI object type
@@ -132,7 +132,7 @@ func (r Resource) getQuery(opts *Options, query []Condition, extra url.Values) u
     if cond.Field != nil {
       search += *cond.Field
     } else if cond.Attribute != nil {
-      search += *cond.Field
+      search += "*" + *cond.Attribute
     }
     search += cond.Modifiers
     v.Set(search, cond.Value)
