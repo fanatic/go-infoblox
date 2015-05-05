@@ -1,11 +1,9 @@
 package infoblox
 
 import (
-  "bytes"
   "encoding/json"
   "fmt"
   "log"
-  "net/http"
   "net/url"
   "strconv"
   "strings"
@@ -47,13 +45,7 @@ func (r Resource) All(opts *Options) ([]map[string]interface{}, error) {
 func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface{}, error) {
   q := r.getQuery(opts, query, url.Values{})
 
-  log.Printf("GET %s\n", r.resourceURI()+"?"+q.Encode())
-  req, err := http.NewRequest("GET", r.resourceURI()+"?"+q.Encode(), nil)
-  if err != nil {
-    return nil, fmt.Errorf("Error creating request: %v\n", err)
-  }
-
-  resp, err := r.conn.SendRequest(req)
+  resp, err := r.conn.SendRequest("GET", r.resourceURI()+"?"+q.Encode(), "", nil)
   if err != nil {
     return nil, fmt.Errorf("Error sending request: %v\n", err)
   }
@@ -71,17 +63,15 @@ func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface
 func (r Resource) Create(data url.Values, opts *Options, body interface{}) (string, error) {
   q := r.getQuery(opts, []Condition{}, data)
   q.Set("_return_fields", "") //Force object response
-  log.Printf("POST %s\n", r.resourceURI()+"?"+q.Encode())
 
-  var req *http.Request
   var err error
+  head := make(map[string]string)
+  var bodyStr, urlStr string
   if body == nil {
     // Send URL-encoded data in the request body
-    req, err = http.NewRequest("POST", r.resourceURI(), strings.NewReader(q.Encode()))
-    if err != nil {
-      return "", fmt.Errorf("Error creating request: %v\n", err)
-    }
-    req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+    urlStr = r.resourceURI()
+    bodyStr = q.Encode()
+    head["Content-Type"] = "application/x-www-form-urlencoded"
   } else {
     // Put url-encoded data in the URL and send the body parameter as a JSON body.
     bodyJSON, err := json.Marshal(body)
@@ -89,14 +79,12 @@ func (r Resource) Create(data url.Values, opts *Options, body interface{}) (stri
       return "", fmt.Errorf("Error creating request: %v\n", err)
     }
     log.Printf("POST body: %s\n", bodyJSON)
-    req, err = http.NewRequest("POST", r.resourceURI()+"?"+q.Encode(), bytes.NewReader(bodyJSON))
-    if err != nil {
-      return "", fmt.Errorf("Error creating request: %v\n", err)
-    }
-    req.Header.Set("Content-Type", "application/json")
+    urlStr = r.resourceURI() + "?" + q.Encode()
+    bodyStr = string(bodyJSON)
+    head["Content-Type"] = "application/json"
   }
 
-  resp, err := r.conn.SendRequest(req)
+  resp, err := r.conn.SendRequest("POST", urlStr, bodyStr, head)
   if err != nil {
     return "", fmt.Errorf("Error sending request: %v\n", err)
   }

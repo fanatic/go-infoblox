@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	// URL, username, password, sslVerify
-	ib := infoblox.NewClient("https://192.168.2.200/", "admin", "infoblox", false)
+	// URL, username, password, sslVerify, useCookies
+	ib := infoblox.NewClient("https://192.168.2.200/", "admin", "infoblox", false, false)
 
 	// All networks
 	printList(ib.Network().All(nil))
