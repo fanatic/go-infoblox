@@ -91,12 +91,22 @@ func (r Resource) Create(data url.Values, opts *Options, body interface{}) (stri
 
   //fmt.Printf("%v", resp.ReadBody())
 
-  var out map[string]string
-  err = resp.Parse(&out)
-  if err != nil {
+  // If you POST to record:host with a scheduled creation time, it sends back a string regardless of the presence of _return_fields
+  var responseData interface{}
+  var ret string
+  if err := resp.Parse(&responseData); err != nil {
     return "", fmt.Errorf("%+v\n", err)
   }
-  return out["_ref"], nil
+  switch s := responseData.(type) {
+  case string:
+    ret = s
+  case map[string]interface{}:
+    ret = s["_ref"].(string)
+  default:
+    return "", fmt.Errorf("Invalid return type %T", s)
+  }
+
+  return ret, nil
 }
 
 func (r Resource) getQuery(opts *Options, query []Condition, extra url.Values) url.Values {
