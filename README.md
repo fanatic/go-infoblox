@@ -25,14 +25,14 @@ Using
 
     go run ./example/example.go
 
-Debugging 
+Debugging
 ---------
 To see what requests are being issued by the library, set up an HTTP proxy
 such as Charles Proxy and then set the following environment variable:
 
     export HTTP_PROXY=http://localhost:8888
 
-To Do 
+To Do
 -----
 - Only supports Network, Record:Host, Record:Cname, and Record:Ptr - need to add other WAPI objects, but they should be trivial to add.
 - Unit tests
