@@ -16,7 +16,7 @@ func (c *Client) Network() *Resource {
 }
 
 type NetworkObject struct {
-	Object      `json:"-"`
+	Object
 	Comment     string  `json:"comment,omitempty"`
 	Network     string  `json:"network,omitempty"`
 	NetworkView string  `json:"network_view,omitempty"`
