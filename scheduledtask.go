@@ -15,8 +15,8 @@ type ScheduledTaskObject struct {
 func (c *Client) ScheduledTaskObject(ref string) *ScheduledTaskObject {
 	return &ScheduledTaskObject{
 		Object{
-			_ref: ref,
-			r:    c.ScheduledTask(),
+			Ref: ref,
+			r:   c.ScheduledTask(),
 		},
 	}
 }

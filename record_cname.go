@@ -15,8 +15,8 @@ type RecordCnameObject struct {
 func (c *Client) RecordCnameObject(ref string) *RecordCnameObject {
 	return &RecordCnameObject{
 		Object{
-			_ref: ref,
-			r:    c.RecordCname(),
+			Ref: ref,
+			r:   c.RecordCname(),
 		},
 	}
 }

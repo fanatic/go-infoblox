@@ -7,8 +7,8 @@ import (
 
 //Resource represents a WAPI object
 type Object struct {
-	_ref string
-	r    *Resource
+	Ref string `json:"_ref"`
+	r   *Resource
 }
 
 func (o Object) Get(opts *Options) (map[string]interface{}, error) {
@@ -92,9 +92,5 @@ func (o Object) FunctionCall(functionName string, inputFields url.Values) (map[s
 }
 
 func (o Object) objectURI() string {
-	return BASE_PATH + o._ref
-}
-
-func (o Object) Ref() string {
-	return o._ref
+	return BASE_PATH + o.Ref
 }

@@ -49,8 +49,8 @@ func (e ExtAttr) GetFloat(key string) (float64, bool) {
 func (c *Client) NetworkObject(ref string) *NetworkObject {
 	obj := NetworkObject{}
 	obj.Object = Object{
-		_ref: ref,
-		r:    c.Network(),
+		Ref: ref,
+		r:   c.Network(),
 	}
 	return &obj
 }
