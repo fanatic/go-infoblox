@@ -11,7 +11,7 @@ func (c *Client) RecordHost() *Resource {
 }
 
 type RecordHostObject struct {
-	Object    `json:"-"`
+	Object
 	Ipv4Addrs []HostIpv4Addr `json:"ipv4addrs,omitempty"`
 	//Ipv6Addrs string `json:"ipv6addrs,omitempty"`
 	Name string `json:"name,omitempty"`

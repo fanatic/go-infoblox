@@ -9,7 +9,7 @@ func (c *Client) Ipv4address() *Resource {
 }
 
 type Ipv4addressObject struct {
-	Object               `json:"-"`
+	Object
 	DHCPClientIdentifier string   `json:"dhcp_client_identifier,omitempty"`
 	IPAddress            string   `json:"ip_address,omitempty"`
 	IsConflict           bool     `json:"is_conflict,omitempty"`
