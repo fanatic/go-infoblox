@@ -29,8 +29,8 @@ type HostIpv4Addr struct {
 func (c *Client) RecordHostObject(ref string) *RecordHostObject {
 	host := RecordHostObject{}
 	host.Object = Object{
-		_ref: ref,
-		r:    c.RecordHost(),
+		Ref: ref,
+		r:   c.RecordHost(),
 	}
 	return &host
 }

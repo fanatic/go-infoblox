@@ -28,8 +28,8 @@ type Ipv4addressObject struct {
 func (c *Client) Ipv4addressObject(ref string) *Ipv4addressObject {
 	ip := Ipv4addressObject{}
 	ip.Object = Object{
-		_ref: ref,
-		r:    c.Ipv4address(),
+		Ref: ref,
+		r:   c.Ipv4address(),
 	}
 	return &ip
 }

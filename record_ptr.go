@@ -14,8 +14,8 @@ type RecordPtrObject struct {
 func (c *Client) RecordPtrObject(ref string) *RecordPtrObject {
 	return &RecordPtrObject{
 		Object{
-			_ref: ref,
-			r:    c.RecordPtr(),
+			Ref: ref,
+			r:   c.RecordPtr(),
 		},
 	}
 }
