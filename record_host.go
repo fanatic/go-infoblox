@@ -52,7 +52,7 @@ func (c *Client) GetRecordHost(ref string) (*RecordHostObject, error) {
 func (c *Client) FindRecordHost(name string) ([]RecordHostObject, error) {
 	field := "name"
 	conditions := []Condition{Condition{Field: &field, Value: name}}
-	resp, err := c.Ipv4address().find(conditions, nil)
+	resp, err := c.RecordHost().find(conditions, nil)
 	if err != nil {
 		return nil, err
 	}
