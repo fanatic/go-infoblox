@@ -18,7 +18,7 @@ type Ipv4addressObject struct {
 	Names                []string `json:"names,omitempty"`
 	Network              string   `json:"network,omitempty"`
 	NetworkView          string   `json:"network_view,omitempty"`
-	Objects              string   `json:"objects,omitempty"`
+	Objects              []string `json:"objects,omitempty"`
 	Status               string   `json:"status,omitempty"`
 	Types                []string `json:"types,omitempty"`
 	Usage                []string `json:"usage,omitempty"`
