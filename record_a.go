@@ -2,6 +2,7 @@ package infoblox
 
 import "fmt"
 
+// https://102.168.2.200/wapidoc/objects/record.a.html
 func (c *Client) RecordA() *Resource {
 	return &Resource{
 		conn:       c,
@@ -19,7 +20,7 @@ func (c *Client) RecordAObject(ref string) *RecordAObject {
 	a := RecordAOBject{}
 	a.Object = Object {
 		Ref: ref,
-		r: c.RecordA(),`a
+		r: c.RecordA(),
 	}
 	return &a
 }
