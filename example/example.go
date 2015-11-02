@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	infoblox "github.com/emdem/go-infoblox"
+	infoblox "github.com/fanatic/go-infoblox"
 )
 
 func main() {
