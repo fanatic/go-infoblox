@@ -17,7 +17,7 @@ type RecordAObject struct {
 }
 
 func (c *Client) RecordAObject(ref string) *RecordAObject {
-	a := RecordAOBject{}
+	a := RecordAObject{}
 	a.Object = Object {
 		Ref: ref,
 		r: c.RecordA(),
