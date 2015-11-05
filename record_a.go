@@ -12,7 +12,7 @@ func (c *Client) RecordA() *Resource {
 
 type RecordAObject struct {
 	Object
-	Ipv4Addr HostIpv4Addr `json:"ipv4addr,omitempty"`
+	Ipv4Addr string `json:"ipv4addr,omitempty"`
 	Name string `json:"name,omitempty"`
 }
 
