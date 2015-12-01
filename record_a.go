@@ -13,22 +13,23 @@ func (c *Client) RecordA() *Resource {
 type RecordAObject struct {
 	Object
 	Ipv4Addr string `json:"ipv4addr,omitempty"`
-	Name string `json:"name,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Ttl      int    `json:"ttl,omitempty"`
 }
 
 func (c *Client) RecordAObject(ref string) *RecordAObject {
 	a := RecordAObject{}
-	a.Object = Object {
+	a.Object = Object{
 		Ref: ref,
-		r: c.RecordA(),
+		r:   c.RecordA(),
 	}
 	return &a
 }
 
-func (c *Client) GetRecordA(ref string) (*RecordAObject, error) {
-	resp, err := c.RecordAObject(ref).get(nil)
+func (c *Client) GetRecordA(ref string, opts *Options) (*RecordAObject, error) {
+	resp, err := c.RecordAObject(ref).get(opts)
 	if err != nil {
-		return nil, fmt.Errorf("Could not get created host record: %s", err)
+		return nil, fmt.Errorf("Could not get created A record: %s", err)
 	}
 	var out RecordAObject
 	err = resp.Parse(&out)
@@ -40,7 +41,7 @@ func (c *Client) GetRecordA(ref string) (*RecordAObject, error) {
 
 func (c *Client) FindRecordA(name string) ([]RecordAObject, error) {
 	field := "name"
-	conditions := []Condition{Condition{Field:&field, Value:name}}
+	conditions := []Condition{Condition{Field: &field, Value: name}}
 	resp, err := c.RecordA().find(conditions, nil)
 	if err != nil {
 		return nil, err
@@ -52,4 +53,4 @@ func (c *Client) FindRecordA(name string) ([]RecordAObject, error) {
 		return nil, err
 	}
 	return out, nil
-} 
+}
