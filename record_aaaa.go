@@ -26,7 +26,7 @@ func (c *Client) RecordAAAAObject(ref string) *RecordAAAAObject {
 	return &a
 }
 
-func (c *Client) GetRecordAAAA(ref string, opts *Options) (*RecordAAAAObject, error) {
+func (c *Client) GetRecordAAAA(ref string) (*RecordAAAAObject, error) {
 	resp, err := c.RecordAAAAObject(ref).get(nil)
 	if err != nil {
 		return nil, fmt.Errorf("Could not get created AAAA record: %s", err)
