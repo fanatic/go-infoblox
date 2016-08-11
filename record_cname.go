@@ -12,7 +12,7 @@ func (c *Client) RecordCname() *Resource {
 
 type RecordCnameObject struct {
 	Object
-	Canoncial string `json:"canonical,omitempty"`
+	Canonical string `json:"canonical,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Ttl       int    `json:"ttl,omitempty"`
 }
