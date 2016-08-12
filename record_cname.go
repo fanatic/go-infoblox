@@ -12,9 +12,11 @@ func (c *Client) RecordCname() *Resource {
 
 type RecordCnameObject struct {
 	Object
+	Comment   string `json:"comment,omitempty"`
 	Canonical string `json:"canonical,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Ttl       int    `json:"ttl,omitempty"`
+	View      string `json:"view,omitempty"`
 }
 
 func (c *Client) RecordCnameObject(ref string) *RecordCnameObject {
