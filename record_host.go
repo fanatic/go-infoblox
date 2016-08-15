@@ -17,6 +17,7 @@ type RecordHostObject struct {
 	Ipv4Addrs       []HostIpv4Addr `json:"ipv4addrs,omitempty"`
 	Ipv6Addrs       []HostIpv6Addr `json:"ipv6addrs,omitempty"`
 	Name            string         `json:"name,omitempty"`
+	Ttl             int            `json:"ttl,omitempty"`
 	View            string         `json:"view,omitempty"`
 }
 
