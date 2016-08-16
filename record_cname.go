@@ -28,8 +28,8 @@ func (c *Client) RecordCnameObject(ref string) *RecordCnameObject {
 	return &cname
 }
 
-func (c *Client) GetRecordCname(ref string) (*RecordCnameObject, error) {
-	resp, err := c.RecordCnameObject(ref).get(nil)
+func (c *Client) GetRecordCname(ref string, opts *Options) (*RecordCnameObject, error) {
+	resp, err := c.RecordCnameObject(ref).get(opts)
 	if err != nil {
 		return nil, fmt.Errorf("Could not get created CNAME record: %s", err)
 	}
