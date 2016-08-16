@@ -46,8 +46,8 @@ func (c *Client) RecordHostObject(ref string) *RecordHostObject {
 	return &host
 }
 
-func (c *Client) GetRecordHost(ref string) (*RecordHostObject, error) {
-	resp, err := c.RecordHostObject(ref).get(nil)
+func (c *Client) GetRecordHost(ref string, opts *Options) (*RecordHostObject, error) {
+	resp, err := c.RecordHostObject(ref).get(opts)
 	if err != nil {
 		return nil, fmt.Errorf("Could not get created host record: %s", err)
 	}

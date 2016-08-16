@@ -1,7 +1,9 @@
 package infoblox
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/url"
 )
 
@@ -36,23 +38,52 @@ func (o Object) get(opts *Options) (*APIResponse, error) {
 	return resp, nil
 }
 
-func (o Object) Update(data url.Values, opts *Options) (string, error) {
+func (o Object) Update(data url.Values, opts *Options, body interface{}) (string, error) {
 	q := o.r.getQuery(opts, []Condition{}, data)
 	q.Set("_return_fields", "") //Force object response
 
-	resp, err := o.r.conn.SendRequest("PUT", o.objectURI(), q.Encode(), map[string]string{"Content-Type": "application/x-www-form-urlencoded"})
+	var err error
+	head := make(map[string]string)
+	var bodyStr, urlStr string
+	if body == nil {
+		// Send URL-encoded data in the request body
+		urlStr = o.objectURI()
+		bodyStr = q.Encode()
+		head["Content-Type"] = "application/x-www-form-urlencoded"
+	} else {
+		// Put url-encoded data in the URL and send the body parameter as a JSON body.
+		bodyJSON, err := json.Marshal(body)
+		if err != nil {
+			return "", fmt.Errorf("Error creating request: %v\n", err)
+		}
+		log.Printf("PUT body: %s\n", bodyJSON)
+		urlStr = o.objectURI() + "?" + q.Encode()
+		bodyStr = string(bodyJSON)
+		head["Content-Type"] = "application/json"
+	}
+
+	resp, err := o.r.conn.SendRequest("PUT", urlStr, bodyStr, head)
 	if err != nil {
 		return "", fmt.Errorf("Error sending request: %v\n", err)
 	}
 
 	//fmt.Printf("%v", resp.ReadBody())
 
-	var out map[string]string
-	err = resp.Parse(&out)
-	if err != nil {
+	var responseData interface{}
+	var ret string
+	if err := resp.Parse(&responseData); err != nil {
 		return "", fmt.Errorf("%+v\n", err)
 	}
-	return out["_ref"], nil
+	switch s := responseData.(type) {
+	case string:
+		ret = s
+	case map[string]interface{}:
+		ret = s["_ref"].(string)
+	default:
+		return "", fmt.Errorf("Invalid return type %T", s)
+	}
+
+	return ret, nil
 }
 
 func (o Object) Delete(opts *Options) error {
