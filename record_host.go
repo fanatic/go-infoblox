@@ -17,6 +17,7 @@ type RecordHostObject struct {
 	Ipv4Addrs       []HostIpv4Addr `json:"ipv4addrs,omitempty"`
 	Ipv6Addrs       []HostIpv6Addr `json:"ipv6addrs,omitempty"`
 	Name            string         `json:"name,omitempty"`
+	Ttl             int            `json:"ttl,omitempty"`
 	View            string         `json:"view,omitempty"`
 }
 
@@ -45,8 +46,8 @@ func (c *Client) RecordHostObject(ref string) *RecordHostObject {
 	return &host
 }
 
-func (c *Client) GetRecordHost(ref string) (*RecordHostObject, error) {
-	resp, err := c.RecordHostObject(ref).get(nil)
+func (c *Client) GetRecordHost(ref string, opts *Options) (*RecordHostObject, error) {
+	resp, err := c.RecordHostObject(ref).get(opts)
 	if err != nil {
 		return nil, fmt.Errorf("Could not get created host record: %s", err)
 	}

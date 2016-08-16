@@ -13,15 +13,16 @@ type RecordPtrObject struct {
 	Ipv4Addr string `json:"ipv4addr,omitempty"`
 	Ipv6Addr string `json:"ipv6addr,omitempty"`
 	Name     string `json:"name,omitempty"`
+	PtrDname string `json:"ptrdname,omitempty"`
 	Ttl      int    `json:"ttl,omitempty"`
 	View     string `json:"view,omitempty"`
 }
 
 func (c *Client) RecordPtrObject(ref string) *RecordPtrObject {
-	return &RecordPtrObject{
-		Object{
-			Ref: ref,
-			r:   c.RecordPtr(),
-		},
+	ptr := RecordPtrObject{}
+	ptr.Object = Object{
+		Ref: ref,
+		r:   c.RecordPtr(),
 	}
+	return &ptr
 }
