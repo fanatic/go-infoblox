@@ -58,7 +58,7 @@ func main() {
 		// Update it
 		d = url.Values{}
 		d.Set("comment", "updated example")
-		printString(ib.NetworkObject(ref).Update(d, nil))
+		printString(ib.NetworkObject(ref).Update(d, nil, nil))
 
 		// Get it
 		printObject(ib.NetworkObject(ref).Get(nil))
