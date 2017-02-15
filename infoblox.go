@@ -95,6 +95,9 @@ func (c *Client) SendRequest(method, urlStr, body string, head map[string]string
 	}
 
 	r, err = c.HttpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("Error executing request: %v\n", err)
+	}
 	if r.StatusCode == 401 && c.UseCookies { // don't bother re-sending if we aren't using cookies
 		log.Printf("Re-sending request with basic auth after 401")
 		// Re-build request
