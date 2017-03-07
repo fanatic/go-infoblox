@@ -104,10 +104,13 @@ func (o Object) Delete(opts *Options) error {
 	return nil
 }
 
-func (o Object) FunctionCall(functionName string, inputFields url.Values) (map[string]interface{}, error) {
-	inputFields.Set("_function", functionName)
+func (o Object) FunctionCall(functionName string, jsonBody interface{}) (map[string]interface{}, error) {
+	data, err := json.Marshal(jsonBody)
+	if err != nil {
+		return nil, fmt.Errorf("Error sending request: %v\n", err)
+	}
 
-	resp, err := o.r.conn.SendRequest("POST", o.objectURI(), inputFields.Encode(), map[string]string{"Content-Type": "application/x-www-form-urlencoded"})
+	resp, err := o.r.conn.SendRequest("POST", fmt.Sprintf("%s?_function=%s", o.objectURI(), functionName), string(data), map[string]string{"Content-Type": "application/json"})
 	if err != nil {
 		return nil, fmt.Errorf("Error sending request: %v\n", err)
 	}
