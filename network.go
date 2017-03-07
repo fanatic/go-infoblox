@@ -1,11 +1,6 @@
 package infoblox
 
-import (
-	"fmt"
-	"net/url"
-	"strconv"
-	"strings"
-)
+import "fmt"
 
 // https://192.168.2.200/wapidoc/objects/network.html
 func (c *Client) Network() *Resource {
@@ -59,16 +54,20 @@ func (c *Client) NetworkObject(ref string) *NetworkObject {
 //returning an array of available IP addresses.
 //You may optionally specify how many IPs you want (num) and which ones to
 //exclude from consideration (array of IPv4 addrdess strings).
+type NextAvailableIPParams struct {
+	Exclude []string `json:"exclude,omitempty"`
+	Num     int      `json:"num,omitempty"`
+}
+
 func (n NetworkObject) NextAvailableIP(num int, exclude []string) (map[string]interface{}, error) {
 	if num == 0 {
 		num = 1
 	}
 
-	v := url.Values{}
-	if exclude != nil {
-		v.Set("exclude", strings.Join(exclude, ","))
+	v := &NextAvailableIPParams{
+		Exclude: exclude,
+		Num:     num,
 	}
-	v.Set("num", strconv.Itoa(num))
 
 	out, err := n.FunctionCall("next_available_ip", v)
 	if err != nil {
