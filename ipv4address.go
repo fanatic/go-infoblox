@@ -49,3 +49,24 @@ func (c *Client) FindIP(ip string) ([]Ipv4addressObject, error) {
 	}
 	return out, nil
 }
+
+func (c *Client) FindUnusedIPInRange(start string, end string) ([]Ipv4addressObject, error) {
+	ip_field := "ip_address"
+	status_field := "status"
+	conditions := []Condition{
+		Condition{Field: &ip_field, Value: start, Modifiers: ">"},
+		Condition{Field: &ip_field, Value: end, Modifiers: "<"},
+		Condition{Field: &status_field, Value: "UNUSED"},
+	}
+	resp, err := c.Ipv4address().find(conditions, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var out []Ipv4addressObject
+	err = resp.Parse(&out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
