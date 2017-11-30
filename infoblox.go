@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/sethgrid/pester"
 	"golang.org/x/net/publicsuffix"
 )
 
@@ -25,7 +26,7 @@ type Client struct {
 	Host       string
 	Password   string
 	Username   string
-	HttpClient *http.Client
+	HttpClient *pester.Client
 	UseCookies bool
 }
 
@@ -59,12 +60,14 @@ func NewClient(host, username, password string, sslVerify, useCookies bool) *Cli
 	if proxy != nil {
 		transport.Proxy = http.ProxyURL(proxy)
 	}
-
+	pesterClient := pester.NewExtendedClient(&http.Client{
+		Transport: transport,
+	})
+	pesterClient.MaxRetries = 6
+	pesterClient.Backoff = pester.ExponentialJitterBackoff
 	client := &Client{
 		Host: host,
-		HttpClient: &http.Client{
-			Transport: transport,
-		},
+		HttpClient: pesterClient,
 		Username:   username,
 		Password:   password,
 		UseCookies: useCookies,
