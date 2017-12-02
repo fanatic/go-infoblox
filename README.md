@@ -1,13 +1,12 @@
-go-infoblox
-=========
-This project implements a Go client library for the Infoblox WAPI.  This
-library supports version 1.4.1 and user/pass auth.
+# go-infoblox
 
-Work in Progress! Not for use in production, but do let me know if you find
-that it suits your needs.
+This project implements a Go client library for the Infoblox WAPI. This library supports version 1.4.1 and user/pass
+auth.
 
-Installing
-----------
+It was originally written for an early version of Go, and I'm concerned about breaking backwards compatability.
+
+## Installing
+
 Run
 
     go get github.com/fanatic/go-infoblox
@@ -16,24 +15,23 @@ Include in your source:
 
     import "github.com/fanatic/go-infoblox"
 
-Godoc
------
+## Godoc
+
 See http://godoc.org/github.com/fanatic/go-infoblox
 
-Using
------
+## Using
 
     go run ./example/example.go
 
-Debugging
----------
-To see what requests are being issued by the library, set up an HTTP proxy
-such as Charles Proxy and then set the following environment variable:
+## Debugging
+
+To see what requests are being issued by the library, set up an HTTP proxy such as Charles Proxy and then set the
+following environment variable:
 
     export HTTP_PROXY=http://localhost:8888
 
-To Do
------
-- Only supports Network, Record:Host, Record:Cname, and Record:Ptr - need to add other WAPI objects, but they should be trivial to add.
-- Unit tests
-- Responses as objects rather than interfaces
+## To Do
+
+* Need to add other WAPI objects, but they should be trivial to add.
+* Unit tests
+* Responses as objects rather than interfaces

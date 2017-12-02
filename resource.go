@@ -44,6 +44,9 @@ func (r Resource) All(opts *Options) ([]map[string]interface{}, error) {
 // values, the condition is true if any value in the list matches.
 func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface{}, error) {
 	resp, err := r.find(query, opts)
+	if err != nil {
+		return nil, err
+	}
 
 	var out []map[string]interface{}
 	err = resp.Parse(&out)
