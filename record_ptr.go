@@ -1,5 +1,7 @@
 package infoblox
 
+import "fmt"
+
 func (c *Client) RecordPtr() *Resource {
 	return &Resource{
 		conn:       c,
@@ -25,4 +27,33 @@ func (c *Client) RecordPtrObject(ref string) *RecordPtrObject {
 		r:   c.RecordPtr(),
 	}
 	return &ptr
+}
+
+func (c *Client) GetRecordPtr(ref string, opts *Options) (*RecordPtrObject, error) {
+	resp, err := c.RecordPtrObject(ref).get(opts)
+	if err != nil {
+		return nil, fmt.Errorf("Could not get created PTR record: %s", err)
+	}
+	var out RecordPtrObject
+	err = resp.Parse(&out)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *Client) FindRecordPtr(name string) ([]RecordPtrObject, error) {
+	field := "name"
+	conditions := []Condition{Condition{Field: &field, Value: name}}
+	resp, err := c.RecordPtr().find(conditions, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var out []RecordPtrObject
+	err = resp.Parse(&out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
