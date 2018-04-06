@@ -1,5 +1,6 @@
 package infoblox
 
+// Ipv4address returns an Infoblox Ipv4 address resource
 // https://192.168.2.200/wapidoc/objects/ipv4address.html
 func (c *Client) Ipv4address() *Resource {
 	return &Resource{
@@ -8,6 +9,7 @@ func (c *Client) Ipv4address() *Resource {
 	}
 }
 
+// Ipv4addressObject defines the Ipv4 address object's fields
 type Ipv4addressObject struct {
 	Object
 	DHCPClientIdentifier string   `json:"dhcp_client_identifier,omitempty"`
@@ -25,6 +27,7 @@ type Ipv4addressObject struct {
 	Username             string   `json:"username,omitempty"`
 }
 
+// Ipv4addressObject instantiates an Ipv4 address object with a WAPI ref
 func (c *Client) Ipv4addressObject(ref string) *Ipv4addressObject {
 	ip := Ipv4addressObject{}
 	ip.Object = Object{
@@ -34,6 +37,8 @@ func (c *Client) Ipv4addressObject(ref string) *Ipv4addressObject {
 	return &ip
 }
 
+// FindIP searches the Infoblox WAPI for the Ipv4address object with the given
+// IP address
 func (c *Client) FindIP(ip string) ([]Ipv4addressObject, error) {
 	field := "ip_address"
 	conditions := []Condition{Condition{Field: &field, Value: ip}}
@@ -50,13 +55,15 @@ func (c *Client) FindIP(ip string) ([]Ipv4addressObject, error) {
 	return out, nil
 }
 
+// FindUnusedIPInRange searches the Infoblox WAPI for unused IP addresses in the
+// given IP range.
 func (c *Client) FindUnusedIPInRange(start string, end string) ([]Ipv4addressObject, error) {
-	ip_field := "ip_address"
-	status_field := "status"
+	ipField := "ip_address"
+	statusField := "status"
 	conditions := []Condition{
-		Condition{Field: &ip_field, Value: start, Modifiers: ">"},
-		Condition{Field: &ip_field, Value: end, Modifiers: "<"},
-		Condition{Field: &status_field, Value: "UNUSED"},
+		Condition{Field: &ipField, Value: start, Modifiers: ">"},
+		Condition{Field: &ipField, Value: end, Modifiers: "<"},
+		Condition{Field: &statusField, Value: "UNUSED"},
 	}
 	resp, err := c.Ipv4address().find(conditions, nil)
 	if err != nil {

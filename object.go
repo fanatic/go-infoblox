@@ -7,12 +7,13 @@ import (
 	"net/url"
 )
 
-//Resource represents a WAPI object
+// Object represents a WAPI object
 type Object struct {
 	Ref string `json:"_ref"`
 	r   *Resource
 }
 
+// Get fetches the Object from the Infoblox WAPI
 func (o Object) Get(opts *Options) (map[string]interface{}, error) {
 	resp, err := o.get(opts)
 	if err != nil {
@@ -22,7 +23,7 @@ func (o Object) Get(opts *Options) (map[string]interface{}, error) {
 	var out map[string]interface{}
 	err = resp.Parse(&out)
 	if err != nil {
-		return nil, fmt.Errorf("%+v\n", err)
+		return nil, fmt.Errorf("%+v", err)
 	}
 
 	return out, nil
@@ -33,11 +34,12 @@ func (o Object) get(opts *Options) (*APIResponse, error) {
 
 	resp, err := o.r.conn.SendRequest("GET", o.objectURI()+"?"+q.Encode(), "", nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error sending request: %v\n", err)
+		return nil, fmt.Errorf("Error sending request: %v", err)
 	}
 	return resp, nil
 }
 
+// Update updates the Object in the Infoblox WAPI
 func (o Object) Update(data url.Values, opts *Options, body interface{}) (string, error) {
 	q := o.r.getQuery(opts, []Condition{}, data)
 	q.Set("_return_fields", "") //Force object response
@@ -54,7 +56,7 @@ func (o Object) Update(data url.Values, opts *Options, body interface{}) (string
 		// Put url-encoded data in the URL and send the body parameter as a JSON body.
 		bodyJSON, err := json.Marshal(body)
 		if err != nil {
-			return "", fmt.Errorf("Error creating request: %v\n", err)
+			return "", fmt.Errorf("Error creating request: %v", err)
 		}
 		log.Printf("PUT body: %s\n", bodyJSON)
 		urlStr = o.objectURI() + "?" + q.Encode()
@@ -64,7 +66,7 @@ func (o Object) Update(data url.Values, opts *Options, body interface{}) (string
 
 	resp, err := o.r.conn.SendRequest("PUT", urlStr, bodyStr, head)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %v\n", err)
+		return "", fmt.Errorf("Error sending request: %v", err)
 	}
 
 	//fmt.Printf("%v", resp.ReadBody())
@@ -72,7 +74,7 @@ func (o Object) Update(data url.Values, opts *Options, body interface{}) (string
 	var responseData interface{}
 	var ret string
 	if err := resp.Parse(&responseData); err != nil {
-		return "", fmt.Errorf("%+v\n", err)
+		return "", fmt.Errorf("%+v", err)
 	}
 	switch s := responseData.(type) {
 	case string:
@@ -86,12 +88,13 @@ func (o Object) Update(data url.Values, opts *Options, body interface{}) (string
 	return ret, nil
 }
 
+// Delete deletes the Object from the Infoblox WAPI
 func (o Object) Delete(opts *Options) error {
 	q := o.r.getQuery(opts, []Condition{}, url.Values{})
 
 	resp, err := o.r.conn.SendRequest("DELETE", o.objectURI()+"?"+q.Encode(), "", nil)
 	if err != nil {
-		return fmt.Errorf("Error sending request: %v\n", err)
+		return fmt.Errorf("Error sending request: %v", err)
 	}
 
 	//fmt.Printf("%v", resp.ReadBody())
@@ -99,20 +102,21 @@ func (o Object) Delete(opts *Options) error {
 	var out interface{}
 	err = resp.Parse(&out)
 	if err != nil {
-		return fmt.Errorf("%+v\n", err)
+		return fmt.Errorf("%+v", err)
 	}
 	return nil
 }
 
+// FunctionCall performs a function call on the Objects
 func (o Object) FunctionCall(functionName string, jsonBody interface{}) (map[string]interface{}, error) {
 	data, err := json.Marshal(jsonBody)
 	if err != nil {
-		return nil, fmt.Errorf("Error sending request: %v\n", err)
+		return nil, fmt.Errorf("Error sending request: %v", err)
 	}
 
 	resp, err := o.r.conn.SendRequest("POST", fmt.Sprintf("%s?_function=%s", o.objectURI(), functionName), string(data), map[string]string{"Content-Type": "application/json"})
 	if err != nil {
-		return nil, fmt.Errorf("Error sending request: %v\n", err)
+		return nil, fmt.Errorf("Error sending request: %v", err)
 	}
 
 	//fmt.Printf("%v", resp.ReadBody())
@@ -120,11 +124,11 @@ func (o Object) FunctionCall(functionName string, jsonBody interface{}) (map[str
 	var out map[string]interface{}
 	err = resp.Parse(&out)
 	if err != nil {
-		return nil, fmt.Errorf("%+v\n", err)
+		return nil, fmt.Errorf("%+v", err)
 	}
 	return out, nil
 }
 
 func (o Object) objectURI() string {
-	return BASE_PATH + o.Ref
+	return BasePath + o.Ref
 }
