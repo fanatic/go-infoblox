@@ -15,6 +15,7 @@ type Resource struct {
 	wapiObject string
 }
 
+// Options represents the Options to be passed to the Infoblox WAPI
 type Options struct {
 	//The maximum number of objects to be returned.  If set to a negative
 	//number the appliance will return an error when the number of returned
@@ -26,7 +27,7 @@ type Options struct {
 	ReturnBasicFields bool     // Return basic fields in addition to ReturnFields
 }
 
-// Conditions are used for searching
+// A Condition is used for searching
 type Condition struct {
 	Field     *string // EITHER A documented field of the object (only set one)
 	Attribute *string // OR the name of an extensible attribute (only set one)
@@ -51,7 +52,7 @@ func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface
 	var out []map[string]interface{}
 	err = resp.Parse(&out)
 	if err != nil {
-		return nil, fmt.Errorf("%+v\n", err)
+		return nil, fmt.Errorf("%+v", err)
 	}
 	return out, nil
 }
@@ -61,12 +62,13 @@ func (r Resource) find(query []Condition, opts *Options) (*APIResponse, error) {
 
 	resp, err := r.conn.SendRequest("GET", r.resourceURI()+"?"+q.Encode(), "", nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error sending request: %v\n", err)
+		return nil, fmt.Errorf("Error sending request: %v", err)
 	}
 
 	return resp, nil
 }
 
+// Create creates a resource. Returns the ref of the created resource.
 func (r Resource) Create(data url.Values, opts *Options, body interface{}) (string, error) {
 	q := r.getQuery(opts, []Condition{}, data)
 	q.Set("_return_fields", "") //Force object response
@@ -83,7 +85,7 @@ func (r Resource) Create(data url.Values, opts *Options, body interface{}) (stri
 		// Put url-encoded data in the URL and send the body parameter as a JSON body.
 		bodyJSON, err := json.Marshal(body)
 		if err != nil {
-			return "", fmt.Errorf("Error creating request: %v\n", err)
+			return "", fmt.Errorf("Error creating request: %v", err)
 		}
 		log.Printf("POST body: %s\n", bodyJSON)
 		urlStr = r.resourceURI() + "?" + q.Encode()
@@ -93,7 +95,7 @@ func (r Resource) Create(data url.Values, opts *Options, body interface{}) (stri
 
 	resp, err := r.conn.SendRequest("POST", urlStr, bodyStr, head)
 	if err != nil {
-		return "", fmt.Errorf("Error sending request: %v\n", err)
+		return "", fmt.Errorf("Error sending request: %v", err)
 	}
 
 	//fmt.Printf("%v", resp.ReadBody())
@@ -102,7 +104,7 @@ func (r Resource) Create(data url.Values, opts *Options, body interface{}) (stri
 	var responseData interface{}
 	var ret string
 	if err := resp.Parse(&responseData); err != nil {
-		return "", fmt.Errorf("%+v\n", err)
+		return "", fmt.Errorf("%+v", err)
 	}
 	switch s := responseData.(type) {
 	case string:
@@ -147,5 +149,5 @@ func (r Resource) getQuery(opts *Options, query []Condition, extra url.Values) u
 }
 
 func (r Resource) resourceURI() string {
-	return BASE_PATH + r.wapiObject
+	return BasePath + r.wapiObject
 }

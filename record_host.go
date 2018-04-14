@@ -2,6 +2,7 @@ package infoblox
 
 import "fmt"
 
+// RecordHost returns the HOST record resource
 // https://192.168.2.200/wapidoc/objects/record.host.html
 func (c *Client) RecordHost() *Resource {
 	return &Resource{
@@ -10,6 +11,7 @@ func (c *Client) RecordHost() *Resource {
 	}
 }
 
+// RecordHostObject defines the HOST record object's fields
 type RecordHostObject struct {
 	Object
 	Comment         string         `json:"comment,omitempty"`
@@ -21,6 +23,7 @@ type RecordHostObject struct {
 	View            string         `json:"view,omitempty"`
 }
 
+// HostIpv4Addr is an ipv4 address for a HOST record
 type HostIpv4Addr struct {
 	Object           `json:"-"`
 	ConfigureForDHCP bool   `json:"configure_for_dhcp,omitempty"`
@@ -29,6 +32,7 @@ type HostIpv4Addr struct {
 	MAC              string `json:"mac,omitempty"`
 }
 
+// HostIpv6Addr is an ipv6 address for a HOST record
 type HostIpv6Addr struct {
 	Object           `json:"-"`
 	ConfigureForDHCP bool   `json:"configure_for_dhcp,omitempty"`
@@ -37,6 +41,7 @@ type HostIpv6Addr struct {
 	MAC              string `json:"mac,omitempty"`
 }
 
+// RecordHostObject instantiates an HOST record object with a WAPI ref
 func (c *Client) RecordHostObject(ref string) *RecordHostObject {
 	host := RecordHostObject{}
 	host.Object = Object{
@@ -46,6 +51,7 @@ func (c *Client) RecordHostObject(ref string) *RecordHostObject {
 	return &host
 }
 
+// GetRecordHost fetches a HOST record from the Infoblox WAPI by its ref
 func (c *Client) GetRecordHost(ref string, opts *Options) (*RecordHostObject, error) {
 	resp, err := c.RecordHostObject(ref).get(opts)
 	if err != nil {
@@ -60,6 +66,8 @@ func (c *Client) GetRecordHost(ref string, opts *Options) (*RecordHostObject, er
 	return &out, nil
 }
 
+// FindRecordHost searches the Infoblox WAPI for the HOST record with the given
+// name
 func (c *Client) FindRecordHost(name string) ([]RecordHostObject, error) {
 	field := "name"
 	conditions := []Condition{Condition{Field: &field, Value: name}}

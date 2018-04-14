@@ -11,14 +11,14 @@ import (
 )
 
 const (
-	STATUS_OK           = 200
-	STATUS_CREATED      = 201
-	STATUS_INVALID      = 400
-	STATUS_UNAUTHORIZED = 401
-	STATUS_FORBIDDEN    = 403
-	STATUS_NOTFOUND     = 404
-	STATUS_LIMIT        = 429
-	STATUS_GATEWAY      = 502
+	statusOK           = 200
+	statusCreated      = 201
+	statusInvalid      = 400
+	statusUnauthorized = 401
+	statusForbidden    = 403
+	statusNotFound     = 404
+	statusLimit        = 429
+	statusGateway      = 502
 )
 
 // APIResponse is used to parse the response from Infoblox.
@@ -44,6 +44,8 @@ func (r APIResponse) readBody() ([]byte, error) {
 	return ioutil.ReadAll(reader)
 }
 
+// ReadBody returns the body of the response as a string, or returns the empty
+// string if there is an error
 func (r APIResponse) ReadBody() string {
 	if b, err := r.readBody(); err == nil {
 		return string(b)
@@ -51,18 +53,18 @@ func (r APIResponse) ReadBody() string {
 	return ""
 }
 
-// Parses a JSON encoded HTTP response into the supplied interface.
+// Parse parses a JSON encoded HTTP response into the supplied interface.
 func (r APIResponse) Parse(out interface{}) error {
 	switch r.StatusCode {
-	case STATUS_UNAUTHORIZED:
+	case statusUnauthorized:
 		fallthrough
-	case STATUS_NOTFOUND:
+	case statusNotFound:
 		fallthrough
-	case STATUS_GATEWAY:
+	case statusGateway:
 		fallthrough
-	case STATUS_FORBIDDEN:
+	case statusForbidden:
 		fallthrough
-	case STATUS_INVALID:
+	case statusInvalid:
 		b, err := r.readBody()
 		if err != nil {
 			return err
@@ -79,9 +81,9 @@ func (r APIResponse) Parse(out interface{}) error {
 	//    Reset:     r.RateLimitReset(),
 	//  }
 	//  return
-	case STATUS_CREATED:
+	case statusCreated:
 		fallthrough
-	case STATUS_OK:
+	case statusOK:
 		b, err := r.readBody()
 		if err != nil {
 			return err

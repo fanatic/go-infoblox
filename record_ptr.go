@@ -2,6 +2,7 @@ package infoblox
 
 import "fmt"
 
+// RecordPtr returns the PTR record resource
 func (c *Client) RecordPtr() *Resource {
 	return &Resource{
 		conn:       c,
@@ -9,6 +10,7 @@ func (c *Client) RecordPtr() *Resource {
 	}
 }
 
+// RecordPtrObject defines the PTR record object's fields
 type RecordPtrObject struct {
 	Object
 	Comment  string `json:"comment,omitempty"`
@@ -20,6 +22,7 @@ type RecordPtrObject struct {
 	View     string `json:"view,omitempty"`
 }
 
+// RecordPtrObject instantiates a PTR record object with a WAPI ref
 func (c *Client) RecordPtrObject(ref string) *RecordPtrObject {
 	ptr := RecordPtrObject{}
 	ptr.Object = Object{
@@ -29,6 +32,7 @@ func (c *Client) RecordPtrObject(ref string) *RecordPtrObject {
 	return &ptr
 }
 
+// GetRecordPtr fetches a PTR record from the Infoblox WAPI by its ref
 func (c *Client) GetRecordPtr(ref string, opts *Options) (*RecordPtrObject, error) {
 	resp, err := c.RecordPtrObject(ref).get(opts)
 	if err != nil {
@@ -42,6 +46,8 @@ func (c *Client) GetRecordPtr(ref string, opts *Options) (*RecordPtrObject, erro
 	return &out, nil
 }
 
+// FindRecordPtr searches the Infoblox WAPI for the PTR object with the given
+// name
 func (c *Client) FindRecordPtr(name string) ([]RecordPtrObject, error) {
 	field := "name"
 	conditions := []Condition{Condition{Field: &field, Value: name}}
