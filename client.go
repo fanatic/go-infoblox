@@ -50,9 +50,9 @@ func NewClient(host, username, password string, sslVerify, useCookies bool) *Cli
 	tlsconfig = &tls.Config{
 		InsecureSkipVerify: !sslVerify,
 	}
-	if tlsconfig.InsecureSkipVerify {
-		log.Printf("WARNING: SSL cert verification  disabled\n")
-	}
+	// if tlsconfig.InsecureSkipVerify {
+	// 	log.Printf("WARNING: SSL cert verification  disabled\n")
+	// }
 	transport = &http.Transport{
 		TLSClientConfig: tlsconfig,
 	}
