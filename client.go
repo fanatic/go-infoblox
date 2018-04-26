@@ -15,7 +15,7 @@ import (
 
 var (
 	// WapiVersion specifies the version of the Infoblox REST API to target
-	WapiVersion = "1.4.1"
+	WapiVersion = "1.4.2"
 
 	// BasePath specifies the default path prefix to all WAPI actions
 	BasePath = "/wapi/v" + WapiVersion + "/"
