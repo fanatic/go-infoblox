@@ -15,7 +15,7 @@ func (c *Client) RecordHost() *Resource {
 type RecordHostObject struct {
 	Object
 	Comment         string         `json:"comment,omitempty"`
-	ConfigureForDNS bool           `json:"configure_for_dns,omitempty"`
+	ConfigureForDNS bool           `json:"configure_for_dns"`
 	Ipv4Addrs       []HostIpv4Addr `json:"ipv4addrs,omitempty"`
 	Ipv6Addrs       []HostIpv6Addr `json:"ipv6addrs,omitempty"`
 	Name            string         `json:"name,omitempty"`
@@ -26,7 +26,7 @@ type RecordHostObject struct {
 // HostIpv4Addr is an ipv4 address for a HOST record
 type HostIpv4Addr struct {
 	Object           `json:"-"`
-	ConfigureForDHCP bool   `json:"configure_for_dhcp,omitempty"`
+	ConfigureForDHCP bool   `json:"configure_for_dhcp"`
 	Host             string `json:"host,omitempty"`
 	Ipv4Addr         string `json:"ipv4addr,omitempty"`
 	MAC              string `json:"mac,omitempty"`
@@ -35,7 +35,7 @@ type HostIpv4Addr struct {
 // HostIpv6Addr is an ipv6 address for a HOST record
 type HostIpv6Addr struct {
 	Object           `json:"-"`
-	ConfigureForDHCP bool   `json:"configure_for_dhcp,omitempty"`
+	ConfigureForDHCP bool   `json:"configure_for_dhcp"`
 	Host             string `json:"host,omitempty"`
 	Ipv6Addr         string `json:"ipv6addr,omitempty"`
 	MAC              string `json:"mac,omitempty"`
