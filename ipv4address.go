@@ -14,7 +14,7 @@ type Ipv4addressObject struct {
 	Object
 	DHCPClientIdentifier string   `json:"dhcp_client_identifier,omitempty"`
 	IPAddress            string   `json:"ip_address,omitempty"`
-	IsConflict           bool     `json:"is_conflict,omitempty"`
+	IsConflict           bool     `json:"is_conflict"`
 	LeaseState           string   `json:"lease_state,omitempty"`
 	MACAddress           string   `json:"mac_address,omitempty"`
 	Names                []string `json:"names,omitempty"`
