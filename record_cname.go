@@ -1,7 +1,9 @@
 package infoblox
 
-import "fmt"
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // https://192.168.2.200/wapidoc/objects/record.host.html
 func (c *Client) RecordCname() *Resource {

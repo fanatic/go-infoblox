@@ -93,6 +93,20 @@ func (c *Client) FindNetworkByNetwork(net string) ([]NetworkObject, error) {
 	return out, nil
 }
 
+func (c *Client) NetworkList() ([]NetworkObject, error) {
+	resp, err := c.Network().find(nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var out []NetworkObject
+	err = resp.Parse(&out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *Client) FindNetworkByExtAttrs(attrs map[string]string) ([]NetworkObject, error) {
 	conditions := []Condition{}
 	for k, v := range attrs {
