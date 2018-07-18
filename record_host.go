@@ -1,6 +1,7 @@
 package infoblox
 
 import "fmt"
+import "encoding/json"
 
 // https://192.168.2.200/wapidoc/objects/record.host.html
 func (c *Client) RecordHost() *Resource {
@@ -60,9 +61,20 @@ func (c *Client) GetRecordHost(ref string, opts *Options) (*RecordHostObject, er
 	return &out, nil
 }
 
-func (c *Client) FindRecordHost(name string) ([]RecordHostObject, error) {
+func (c *Client) FindRecordHost(name string, view string) ([]RecordHostObject, error) {
 	field := "name"
-	conditions := []Condition{Condition{Field: &field, Value: name}}
+	viewName := "view"
+	// conditions := []Condition{Condition{Field: &field, Value: name}}
+	conditions := []Condition{
+		Condition{
+			Field: &field,
+			Value: name,
+		},
+		Condition{
+			Field: &viewName,
+			Value: view,
+		},
+	}
 	resp, err := c.RecordHost().find(conditions, nil)
 	if err != nil {
 		return nil, err
@@ -74,4 +86,13 @@ func (c *Client) FindRecordHost(name string) ([]RecordHostObject, error) {
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *Client) CreateRecordHost(recordHostObject RecordHostObject) (string, error) {
+	d, _ := json.Marshal(recordHostObject)
+	resp, err := c.RecordHost().CreateJson("record:host", nil, d)
+	if err != nil {
+		return "", err
+	}
+	return resp, nil
 }

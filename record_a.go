@@ -33,7 +33,7 @@ func (c *Client) GetRecordA(ref string, opts *Options) (*RecordAObject, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Could not get created A record: %s", err)
 	}
-	var out RecordAObject
+	var out RecrdAObject
 	err = resp.Parse(&out)
 	if err != nil {
 		return nil, err
