@@ -2,6 +2,7 @@ package infoblox
 
 import "fmt"
 
+// RecordA returns the A record resource
 // https://102.168.2.200/wapidoc/objects/record.a.html
 func (c *Client) RecordA() *Resource {
 	return &Resource{
@@ -10,6 +11,7 @@ func (c *Client) RecordA() *Resource {
 	}
 }
 
+// RecordAObject defines the A record object's fields
 type RecordAObject struct {
 	Object
 	Comment  string `json:"comment,omitempty"`
@@ -19,6 +21,7 @@ type RecordAObject struct {
 	View     string `json:"view,omitempty"`
 }
 
+// RecordAObject instantiates an A record object with a WAPI ref
 func (c *Client) RecordAObject(ref string) *RecordAObject {
 	a := RecordAObject{}
 	a.Object = Object{
@@ -28,6 +31,7 @@ func (c *Client) RecordAObject(ref string) *RecordAObject {
 	return &a
 }
 
+// GetRecordA fetches an A record from the Infoblox WAPI by its ref
 func (c *Client) GetRecordA(ref string, opts *Options) (*RecordAObject, error) {
 	resp, err := c.RecordAObject(ref).get(opts)
 	if err != nil {
@@ -41,6 +45,8 @@ func (c *Client) GetRecordA(ref string, opts *Options) (*RecordAObject, error) {
 	return &out, nil
 }
 
+// FindRecordA searches the Infoblox WAPI for the A record with the given
+// name
 func (c *Client) FindRecordA(name string) ([]RecordAObject, error) {
 	field := "name"
 	conditions := []Condition{Condition{Field: &field, Value: name}}

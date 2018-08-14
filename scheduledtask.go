@@ -1,5 +1,6 @@
 package infoblox
 
+// ScheduledTask returns an Infoblox Scheduled Task resource
 // https://192.168.2.200/wapidoc/objects/scheduledtask.html
 func (c *Client) ScheduledTask() *Resource {
 	return &Resource{
@@ -8,10 +9,12 @@ func (c *Client) ScheduledTask() *Resource {
 	}
 }
 
+// ScheduledTaskObject defines the Infoblox Scheduled Task object's fields
 type ScheduledTaskObject struct {
 	Object
 }
 
+// ScheduledTaskObject instantiates a ScheduledTask object with a WAPI ref
 func (c *Client) ScheduledTaskObject(ref string) *ScheduledTaskObject {
 	return &ScheduledTaskObject{
 		Object{
@@ -21,6 +24,8 @@ func (c *Client) ScheduledTaskObject(ref string) *ScheduledTaskObject {
 	}
 }
 
+// FindScheduledTask  searches the Infoblox WAPI for Scheduled Tasks that have
+// the given name
 func (c *Client) FindScheduledTask(name string) ([]ScheduledTaskObject, error) {
 	field := "changed_objects.name"
 	o := Options{ReturnFields: []string{"changed_objects"}, ReturnBasicFields: true}
