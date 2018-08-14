@@ -218,7 +218,7 @@ func (r Resource) getQuery(opts *Options, query []Condition, extra url.Values) u
 }
 
 func (r Resource) resourceBase() string {
-	return BASE_PATH
+	return BasePath
 }
 func (r Resource) resourceURI() string {
 	return BasePath + r.wapiObject
