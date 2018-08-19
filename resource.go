@@ -1,8 +1,11 @@
 package infoblox
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"strconv"
@@ -40,6 +43,18 @@ func (r Resource) All(opts *Options) ([]map[string]interface{}, error) {
 	return r.Find([]Condition{}, opts)
 }
 
+func (r Resource) Delete(ref string) (string, error) {
+	uri := r.resourceBase() + ref
+	resp, err := r.conn.SendRequest("DELETE", uri, "", nil)
+	if err != nil {
+		return "", err
+	}
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(resp.Body)
+	bodyOut := buf.String()
+	return bodyOut, nil
+}
+
 // Find resources with query parameters. Conditions are combined with AND
 // logic.  When a field is a list of extensible attribute that can have multiple
 // values, the condition is true if any value in the list matches.
@@ -66,6 +81,60 @@ func (r Resource) find(query []Condition, opts *Options) (*APIResponse, error) {
 	}
 
 	return resp, nil
+}
+
+type APIErrorResponse struct {
+	Text string `json:"text"`
+}
+
+func (r Resource) JsonAction(url string, actionType string, data string) (*APIResponse, error) {
+	var err error
+	head := make(map[string]string)
+
+	if err != nil {
+		return nil, fmt.Errorf("Error creating request: %v\n", err)
+	}
+
+	head["Content-Type"] = "application/json"
+
+	resp, err := r.conn.SendRequest(actionType, url, data, head)
+	return resp, err
+}
+
+func (r Resource) CreateJson(url string, opts *Options, data []byte) (string, error) {
+	var urlStr, bodyJSON string
+
+	urlStr = r.resourceURI()
+	bodyJSON = string(data[:])
+
+	resp, _ := r.JsonAction(urlStr, "POST", bodyJSON)
+	if resp.StatusCode == 400 {
+		var t APIErrorResponse
+		body, _ := ioutil.ReadAll(resp.Body)
+		json.Unmarshal(body, &t)
+		return t.Text, errors.New(t.Text)
+	} else {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return string(body[:]), nil
+	}
+}
+
+func (r Resource) UpdateJson(url string, opts *Options, data []byte) (string, error) {
+	var urlStr, bodyJSON string
+
+	urlStr = r.resourceBase() + url
+	bodyJSON = string(data[:])
+
+	resp, _ := r.JsonAction(urlStr, "PUT", bodyJSON)
+	if resp.StatusCode == 400 {
+		var t APIErrorResponse
+		body, _ := ioutil.ReadAll(resp.Body)
+		json.Unmarshal(body, &t)
+		return t.Text, errors.New(t.Text)
+	} else {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return string(body[:]), nil
+	}
 }
 
 // Create creates a resource. Returns the ref of the created resource.
@@ -148,6 +217,9 @@ func (r Resource) getQuery(opts *Options, query []Condition, extra url.Values) u
 	return v
 }
 
+func (r Resource) resourceBase() string {
+	return BasePath
+}
 func (r Resource) resourceURI() string {
 	return BasePath + r.wapiObject
 }

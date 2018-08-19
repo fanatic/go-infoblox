@@ -87,7 +87,7 @@ func NewClient(host, username, password string, sslVerify, useCookies bool) *Cli
 // SendRequest sends a HTTP request through this instance's HTTP client.
 // Uses cookies if specified, re-creating the request and falling back to basic auth if a cookie is not present
 func (c *Client) SendRequest(method, urlStr, body string, head map[string]string) (resp *APIResponse, err error) {
-	log.Printf("%s %s  payload: %s\n", method, urlStr, body)
+	// log.Printf("%s %s  payload: %s\n", method, urlStr, body)
 	req, err := c.buildRequest(method, urlStr, body, head)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)

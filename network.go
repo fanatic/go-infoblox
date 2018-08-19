@@ -103,6 +103,20 @@ func (c *Client) FindNetworkByNetwork(net string) ([]NetworkObject, error) {
 	return out, nil
 }
 
+func (c *Client) NetworkList() ([]NetworkObject, error) {
+	resp, err := c.Network().find(nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var out []NetworkObject
+	err = resp.Parse(&out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FindNetworkByExtAttrs searches the Infoblox WAPI for a network by its extra
 // attrs field
 func (c *Client) FindNetworkByExtAttrs(attrs map[string]string) ([]NetworkObject, error) {
