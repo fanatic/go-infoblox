@@ -80,12 +80,10 @@ func (c *Client) UpdateRecordCname(recordCnameObject RecordCnameObject) (string,
 	d, _ := json.Marshal(recordCnameObject)
 	existingRecord, err := c.FindRecordCname(recordCnameObject.Name, recordCnameObject.View)
 	if err != nil {
-		fmt.Println(err)
+		return "", fmt.Errorf("Could not find CNAME record to update: %s", err)
 	}
-	fmt.Println(existingRecord[0].Ref)
 	resp, err := c.RecordCname().UpdateJson(existingRecord[0].Ref, nil, d)
 	if err != nil {
-		fmt.Println(err)
 		return "", err
 	}
 	return resp, nil
@@ -95,7 +93,6 @@ func (c *Client) CreateRecordCname(recordCnameObject RecordCnameObject) (string,
 	d, _ := json.Marshal(recordCnameObject)
 	resp, err := c.RecordCname().CreateJson("record:cname", nil, d)
 	if err != nil {
-		fmt.Println(err)
 		return "", err
 	}
 	return resp, nil

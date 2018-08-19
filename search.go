@@ -33,7 +33,6 @@ func (c *Client) SearchObject(ref string) *RecordAObject {
 }
 
 func (c *Client) Search(name string, objtype string) (string, error) {
-
 	field := "search_string"
 	conditions := []Condition{
 		Condition{
@@ -54,14 +53,20 @@ func (c *Client) Search(name string, objtype string) (string, error) {
 	if respErr != nil {
 		return "", respErr
 	}
-	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
 
 	if resp.StatusCode == 400 {
 		var err APIErrorResponse
-		json.Unmarshal(body, &err)
+		if err2 := json.Unmarshal(body, &err); err2 != nil {
+			return "", err2
+		}
 		return "", errors.New(err.Text)
 	}
 
 	return string(body[:]), nil
-
 }
