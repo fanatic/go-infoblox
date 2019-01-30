@@ -16,7 +16,7 @@ func (c *Client) RecordHost() *Resource {
 type RecordHostObject struct {
 	Object
 	Comment         string         `json:"comment,omitempty"`
-	ConfigureForDNS bool           `json:"configure_for_dns"`
+	ConfigureForDNS bool           `json:"configure_for_dns,omitempty"`
 	Ipv4Addrs       []HostIpv4Addr `json:"ipv4addrs,omitempty"`
 	Ipv6Addrs       []HostIpv6Addr `json:"ipv6addrs,omitempty"`
 	Name            string         `json:"name,omitempty"`
