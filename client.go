@@ -84,6 +84,20 @@ func NewClient(host, username, password string, sslVerify, useCookies bool) *Cli
 
 }
 
+// NewClientWithVersion instantiates a new Infoblox client from the provided parameters and sets
+// the WAPI version to a user defined one.
+func NewClientWithVersion(host, username, password, wapiVersion string, sslVerify, useCookies bool) *Client {
+
+	// If the WAPI version parameter is provided from the client user, set the
+	// global WapiVersion variable to it.
+	if wapiVersion != "" {
+		WapiVersion = wapiVersion
+		BasePath = "/wapi/v" + WapiVersion + "/"
+	}
+
+	return NewClient(host, username, password, sslVerify, useCookies)
+}
+
 // SendRequest sends a HTTP request through this instance's HTTP client.
 // Uses cookies if specified, re-creating the request and falling back to basic auth if a cookie is not present
 func (c *Client) SendRequest(method, urlStr, body string, head map[string]string) (resp *APIResponse, err error) {

@@ -72,6 +72,22 @@ func (r Resource) Find(query []Condition, opts *Options) ([]map[string]interface
 	return out, nil
 }
 
+// Query retrieves objects from an Infoblox instance that meet specific
+// conditions and options. The return object is defined by the user and
+// passed to the function by the "out" parameter.
+func (r Resource) Query(query []Condition, opts *Options, out interface{}) error {
+	resp, err := r.find(query, opts)
+	if err != nil {
+		return err
+	}
+
+	err = resp.Parse(&out)
+	if err != nil {
+		return fmt.Errorf("%+v", err)
+	}
+	return nil
+}
+
 func (r Resource) find(query []Condition, opts *Options) (*APIResponse, error) {
 	q := r.getQuery(opts, query, url.Values{})
 
