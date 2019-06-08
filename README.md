@@ -1,3 +1,9 @@
+# Deprecated
+
+Infoblox has created an official Go library.  This library was designed for Infoblox API version 1.4 in mind, and I've been avoiding changes that make the library incompatible with that version.  I recommend folks migrate to the official library.
+
+https://github.com/infobloxopen/infoblox-go-client
+
 # go-infoblox
 
 This project implements a Go client library for the Infoblox WAPI. This library supports version 1.4.1 and user/pass
