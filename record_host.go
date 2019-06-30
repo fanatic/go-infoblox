@@ -22,6 +22,7 @@ type RecordHostObject struct {
 	Name            string         `json:"name,omitempty"`
 	Ttl             int            `json:"ttl,omitempty"`
 	View            string         `json:"view,omitempty"`
+	Zone            string         `json:"zone,omitempty"`
 }
 
 // HostIpv4Addr is an ipv4 address for a HOST record

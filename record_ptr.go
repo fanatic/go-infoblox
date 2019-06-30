@@ -20,6 +20,7 @@ type RecordPtrObject struct {
 	PtrDname string `json:"ptrdname,omitempty"`
 	Ttl      int    `json:"ttl,omitempty"`
 	View     string `json:"view,omitempty"`
+	Zone     string `json:"zone,omitempty"`
 }
 
 // RecordPtrObject instantiates a PTR record object with a WAPI ref
