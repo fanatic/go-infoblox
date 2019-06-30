@@ -14,11 +14,12 @@ func (c *Client) Network() *Resource {
 // NetworkObject defines the Infoblox Network object's fields
 type NetworkObject struct {
 	Object
-	Comment     string  `json:"comment,omitempty"`
-	Network     string  `json:"network,omitempty"`
-	NetworkView string  `json:"network_view,omitempty"`
-	Netmask     int     `json:"netmask,omitempty"`
-	ExtAttrs    ExtAttr `json:"extattrs,omitempty"`
+	Comment          string  `json:"comment,omitempty"`
+	Network          string  `json:"network,omitempty"`
+	NetworkContainer string  `json:"network_container,omitempty"`
+	NetworkView      string  `json:"network_view,omitempty"`
+	Netmask          int     `json:"netmask,omitempty"`
+	ExtAttrs         ExtAttr `json:"extattrs,omitempty"`
 }
 
 // ExtAttr is a map that contains extensible Infoblox attributes

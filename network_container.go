@@ -11,7 +11,9 @@ func (c *Client) NetworkContainer() *Resource {
 // NetworkContainerObject defines the Infoblox Network Container object's fields.
 type NetworkContainerObject struct {
 	Object
-	Comment  string  `json:"comment,omitempty"`
-	Network  string  `json:"network,omitempty"`
-	ExtAttrs ExtAttr `json:"extattrs,omitempty"`
+	Comment          string  `json:"comment,omitempty"`
+	Network          string  `json:"network,omitempty"`
+	NetworkContainer string  `json:"network_container,omitempty"`
+	NetworkView      string  `json:"network_view,omitempty"`
+	ExtAttrs         ExtAttr `json:"extattrs,omitempty"`
 }
