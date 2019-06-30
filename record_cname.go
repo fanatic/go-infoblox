@@ -23,6 +23,7 @@ type RecordCnameObject struct {
 	Name      string `json:"name,omitempty"`
 	Ttl       int    `json:"ttl,omitempty"`
 	View      string `json:"view,omitempty"`
+	Zone      string `json:"zone,omitempty"`
 }
 
 // RecordCnameObject instantiates an CNAME record object with a WAPI ref

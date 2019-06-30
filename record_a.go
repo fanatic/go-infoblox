@@ -19,6 +19,7 @@ type RecordAObject struct {
 	Name     string `json:"name,omitempty"`
 	Ttl      int    `json:"ttl,omitempty"`
 	View     string `json:"view,omitempty"`
+	Zone     string `json:"zone,omitempty"`
 }
 
 // RecordAObject instantiates an A record object with a WAPI ref
