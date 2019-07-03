@@ -22,6 +22,7 @@ type RecordSrvObject struct {
 	Pref     int    `json:"pref,omitempty"`
 	Ttl      int    `json:"ttl,omitempty"`
 	View     string `json:"view,omitempty"`
+	Zone     string `json:"zone,omitempty"`
 }
 
 // RecordSrvObject instantiates an SRV record object with a WAPI ref

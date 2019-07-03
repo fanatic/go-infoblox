@@ -19,7 +19,7 @@ type RecordAAAAObject struct {
 	Name     string `json:"name,omitempty"`
 	Ttl      int    `json:"ttl,omitempty"`
 	View     string `json:"view,omitempty"`
-	Zone     string `json:"omitempty"`
+	Zone     string `json:"zone,omitempty"`
 }
 
 // RecordAAAAObject instantiates an AAAA record object with a WAPI ref
