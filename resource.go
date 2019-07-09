@@ -18,6 +18,16 @@ type Resource struct {
 	wapiObject string
 }
 
+// NewResource creates new resource object from the passed parameters.
+// As Infoblox contains hundreds of different objects, this function
+// will allow the users to adopt new ones vary easy.
+func NewResource(c *Client, wapiObject string) *Resource {
+	return &Resource{
+		conn:       c,
+		wapiObject: wapiObject,
+	}
+}
+
 // Options represents the Options to be passed to the Infoblox WAPI
 type Options struct {
 	//The maximum number of objects to be returned.  If set to a negative
